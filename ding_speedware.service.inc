@@ -13,6 +13,26 @@ function _speedware_get_all_schools() {
   else {
     _speedware_service_log($speedwareServiceGet->getLastError());
   }
+
+  return array();
+}
+
+function _speedware_get_all_teachers() {
+  $speedwareServiceHent = new SpeedwareServiceHent(_speedware_default_config());
+  $laererList = new SpeedwareStructHentLaererList(variable_get('speedware_default_school', FALSE));
+  if($speedwareServiceHent->HentLaererList($laererList))
+    return $speedwareServiceHent
+      ->getResult()
+      ->HentLaererListResult
+      ->Laerer
+      ->HentLaererListResult
+      ->Laerer
+    ;
+  else {
+    _speedware_service_log($speedwareServiceHent->getLastError());
+  }
+
+  return array();
 }
 
 function _speedware_get_all_concerts() {
@@ -30,6 +50,8 @@ function _speedware_get_all_concerts() {
   else {
     _speedware_service_log($speedwareServiceHent->getLastError());
   }
+
+  return array();
 }
 
 function _speedware_default_config() {

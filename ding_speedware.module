@@ -91,7 +91,6 @@ function ding_speedware_theme($existing, $type, $theme, $path) {
   $path = drupal_get_path('module', 'ding_speedware') . '/templates';
 
   $themes = array(
-    // Widget templates.
     'speedware_concerts' => array(
       'path' => $path,
       'template' => 'speedware_concerts',
@@ -99,7 +98,21 @@ function ding_speedware_theme($existing, $type, $theme, $path) {
         'items' => NULL,
       ),
     ),
+    'speedware_teachers' => array(
+      'path' => $path,
+      'template' => 'speedware_teachers',
+      'variables' => array(
+        'items' => NULL,
+      ),
+    ),
   );
 
   return $themes;
+}
+
+/**
+ * Ctools admin view pane's title.
+ */
+function ding_speedware_content_type_admin_title() {
+  return t('Ding Speedware');
 }

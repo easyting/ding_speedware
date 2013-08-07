@@ -10,9 +10,10 @@
 $plugin = array(
   'title' => t('All concerts'),
   'category' => t('Speedware'),
-  'description' => t('Allows to create highliy customizeable list of contents'),
+  'description' => t('Display list of all contents'),
   'single' => TRUE,
   'render callback' => 'ding_speedware_all_concerts_render',
+  'admin title' => 'ding_speedware_content_type_admin_title',
 );
 
 function ding_speedware_all_concerts_render() {
