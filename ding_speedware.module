@@ -25,6 +25,9 @@ function ding_speedware_menu(){
   return $menu;
 }
 
+/**
+ * Speedware admin form.
+ */
 function ding_speedware_admin_form() {
   $form = array();
 
@@ -56,6 +59,9 @@ function ding_speedware_admin_form() {
   return system_settings_form($form);
 }
 
+/**
+ * Speedware admin form validation.
+ */
 function ding_speedware_admin_form_validate($form, &$form_state) {
   $handle = curl_init($form['speedware_service_uri']['#value']);
   curl_setopt($handle,  CURLOPT_RETURNTRANSFER, TRUE);
@@ -72,10 +78,6 @@ function ding_speedware_admin_form_validate($form, &$form_state) {
 
 /**
  * Implements hook_ctools_plugin_directory().
- *
- * It simply tells panels where to find the .inc files that define various
- * args, contexts, content_types. In this case the subdirectories of
- * ctools_plugin_example/panels are used.
  */
 function ding_speedware_ctools_plugin_directory($module, $plugin) {
   if ($module == 'ctools' && !empty($plugin)) {
