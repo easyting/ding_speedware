@@ -107,6 +107,13 @@ function ding_speedware_theme($existing, $type, $theme, $path) {
         'items' => NULL,
       ),
     ),
+    'speedware_instruments' => array(
+      'path' => $path,
+      'template' => 'speedware_instruments',
+      'variables' => array(
+        'items' => NULL,
+      ),
+    ),
   );
 
   return $themes;

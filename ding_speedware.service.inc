@@ -73,6 +73,31 @@ function _speedware_get_all_concerts() {
 }
 
 /**
+ * Get list of all instruments for default school.
+ *
+ * @return array
+ *  list of instruments.
+ */
+function _speedware_get_all_instruments() {
+  $speedwareServiceHent = new SpeedwareServiceHent(_speedware_default_config());
+  $list = new SpeedwareStructHentUndervisningstilbudListe(variable_get('speedware_default_school', FALSE));
+  if($speedwareServiceHent->HentUndervisningstilbudListe($list)) {
+    return $speedwareServiceHent
+      ->getResult()
+      ->HentUndervisningstilbudListeResult
+      ->Undervisningstilbud
+      ->HentUndervisningstilbudListeResult
+      ->Undervisningstilbud
+    ;
+  }
+  else {
+    _speedware_service_log($speedwareServiceHent->getLastError());
+  }
+
+  return array();
+}
+
+/**
  * Create default config for SoapClient.
  *
  * @return array
