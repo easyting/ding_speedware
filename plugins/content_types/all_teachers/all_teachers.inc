@@ -51,3 +51,11 @@ function ding_speedware_all_teachers_plugin_edit_form($form, &$form_state) {
 
   return $form;
 }
+
+/**
+ * Plugin edit form submit handler.
+ * Saves the data from the form.
+ */
+function ding_speedware_all_teachers_plugin_edit_form_submit($form, &$form_state) {
+  $form_state['conf']['all_teachers_custom_title'] = $form_state['values']['all_teachers_custom_title'];
+}
