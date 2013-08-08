@@ -1,0 +1,31 @@
+<?php
+/**
+ * File for class SpeedwareStructSelectSubCatResponse
+ * @package Speedware
+ * @subpackage Structs
+ * @author Mikaël DELSOL <contact@wsdltophp.com>
+ * @version 20130801-01
+ * @date 2013-08-06
+ */
+/**
+ * This class stands for SpeedwareStructSelectSubCatResponse originally named SelectSubCatResponse
+ * Meta informations extracted from the WSDL
+ * - from schema : {@link https://www.speedadmin.dk/public/speedadmin.asmx?WSDL}
+ * @package Speedware
+ * @subpackage Structs
+ * @author Mikaël DELSOL <contact@wsdltophp.com>
+ * @version 20130801-01
+ * @date 2013-08-06
+ */
+class SpeedwareStructSelectSubCatResponse extends SpeedwareWsdlClass
+{
+	/**
+	 * Method returning the class name
+	 * @return string __CLASS__
+	 */
+	public function __toString()
+	{
+		return __CLASS__;
+	}
+}
+?>

@@ -1,0 +1,120 @@
+<?php
+
+/**
+ * @file ding_speedware.module
+ */
+
+require_once __DIR__ . '/lib/SpeedwareAutoload.php';
+require_once __DIR__ . '/ding_speedware.service.inc';
+
+/**
+ * Implements hook_menu().
+ */
+function ding_speedware_menu(){
+  $menu = array(
+    'admin/config/services/speedware' => array(
+      'title' => 'Speedware',
+      'description' => 'Speedware settings',
+      'type' => MENU_NORMAL_ITEM,
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('ding_speedware_admin_form'),
+      'access arguments' => array('access administration pages'),
+    ),
+  );
+
+  return $menu;
+}
+
+/**
+ * Speedware admin form.
+ */
+function ding_speedware_admin_form() {
+  $form = array();
+
+  $form['speedware_service_uri'] = array(
+    '#title' => 'Speedware service WSDL URI',
+    '#description' => 'Link to WDSL page, e.g. https://www.speedadmin.dk/public/speedadmin.asmx?WSDL',
+    '#type' => 'textfield',
+    '#default_value' => variable_get('speedware_service_uri', FALSE),
+  );
+
+  $schools = array();
+  foreach(_speedware_get_all_schools() as $school) {
+    $schools[$school->SchoolShortName] = $school->SchoolName . ' (' . $school->SchoolShortName . ')';
+  }
+
+  $form['speedware_default_school'] = array(
+    '#title' => 'Default school name',
+    '#type' => 'select',
+    '#options' => $schools,
+    '#default_value' => variable_get('speedware_default_school', FALSE),
+  );
+
+  $form['speedware_debug'] = array(
+    '#title' => 'Debug mode',
+    '#type' => 'checkbox',
+    '#default_value' => variable_get('speedware_debug', FALSE),
+  );
+
+  return system_settings_form($form);
+}
+
+/**
+ * Speedware admin form validation.
+ */
+function ding_speedware_admin_form_validate($form, &$form_state) {
+  $handle = curl_init($form['speedware_service_uri']['#value']);
+  curl_setopt($handle,  CURLOPT_RETURNTRANSFER, TRUE);
+  $response = curl_exec($handle);
+  $httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
+  $type = curl_getinfo($handle, CURLINFO_CONTENT_TYPE);
+
+  if($httpCode == 404 || !stristr($type, 'xml')) {
+    form_set_error('speedware_service_uri', t('The service URI is incorrect'));
+  }
+
+  curl_close($handle);
+}
+
+/**
+ * Implements hook_ctools_plugin_directory().
+ */
+function ding_speedware_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'ctools' && !empty($plugin)) {
+    return 'plugins/' . $plugin;
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function ding_speedware_theme($existing, $type, $theme, $path) {
+  // Do not rely on path - it may be unknown to module_invoke_all caller.
+  $path = drupal_get_path('module', 'ding_speedware') . '/templates';
+
+  $themes = array(
+    'speedware_concerts' => array(
+      'path' => $path,
+      'template' => 'speedware_concerts',
+      'variables' => array(
+        'items' => NULL,
+      ),
+    ),
+    'speedware_teachers' => array(
+      'path' => $path,
+      'template' => 'speedware_teachers',
+      'variables' => array(
+        'items' => NULL,
+      ),
+    ),
+  );
+
+  return $themes;
+}
+
+/**
+ * Ctools admin view pane's title.
+ */
+function ding_speedware_content_type_admin_title() {
+  return t('Ding Speedware');
+}

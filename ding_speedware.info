@@ -1,0 +1,5 @@
+name = Ding Speedware
+description = Speedware service integration
+core = 7.x
+files[] = ding_speedware.service.inc
+configure = admin/config/services/speedware
