@@ -30,25 +30,32 @@ function ding_speedware_menu(){
  */
 function ding_speedware_admin_form() {
   $form = array();
+  $service_uri = variable_get('speedware_service_uri', FALSE);
 
   $form['speedware_service_uri'] = array(
     '#title' => 'Speedware service WSDL URI',
     '#description' => 'Link to WDSL page, e.g. https://www.speedadmin.dk/public/speedadmin.asmx?WSDL',
     '#type' => 'textfield',
-    '#default_value' => variable_get('speedware_service_uri', FALSE),
+    '#default_value' => $service_uri,
   );
-
-  $schools = array();
-  foreach(_speedware_get_all_schools() as $school) {
-    $schools[$school->SchoolShortName] = $school->SchoolName . ' (' . $school->SchoolShortName . ')';
-  }
 
   $form['speedware_default_school'] = array(
     '#title' => 'Default school name',
     '#type' => 'select',
-    '#options' => $schools,
+    '#options' => array(),
     '#default_value' => variable_get('speedware_default_school', FALSE),
   );
+
+  try {
+    _ding_speedware_validate_service_uri($service_uri);
+    $form['speedware_default_school']['#options'][] = t('Select');
+    foreach(_speedware_get_all_schools() as $school) {
+      $form['speedware_default_school']['#options'][$school->SchoolShortName] = $school->SchoolName . ' (' . $school->SchoolShortName . ')';
+    }
+  }
+  catch (RuntimeException $e) {
+    $form['speedware_default_school']['#description'] = t('Valid service URI should be set to load list of schools');
+  }
 
   $form['speedware_debug'] = array(
     '#title' => 'Debug mode',
@@ -63,17 +70,33 @@ function ding_speedware_admin_form() {
  * Speedware admin form validation.
  */
 function ding_speedware_admin_form_validate($form, &$form_state) {
-  $handle = curl_init($form['speedware_service_uri']['#value']);
+  try {
+    _ding_speedware_validate_service_uri($form['speedware_service_uri']['#value']);
+  }
+  catch (RuntimeException $e) {
+    form_set_error('speedware_service_uri', $e->getMessage());
+    variable_set('speedware_service_uri', FALSE);
+  }
+}
+
+/**
+ * Validate URI.
+ *
+ * @param string $uri
+ *  WSDL URI.
+ * @throws RuntimeException
+ */
+function _ding_speedware_validate_service_uri($uri) {
+  $handle = curl_init($uri);
   curl_setopt($handle,  CURLOPT_RETURNTRANSFER, TRUE);
   $response = curl_exec($handle);
   $httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
   $type = curl_getinfo($handle, CURLINFO_CONTENT_TYPE);
+  curl_close($handle);
 
   if($httpCode == 404 || !stristr($type, 'xml')) {
-    form_set_error('speedware_service_uri', t('The service URI is incorrect'));
+    throw new RuntimeException(t('The service URI is incorrect'));
   }
-
-  curl_close($handle);
 }
 
 /**
@@ -96,6 +119,13 @@ function ding_speedware_theme($existing, $type, $theme, $path) {
     'speedware_concerts' => array(
       'path' => $path,
       'template' => 'speedware_concerts',
+      'variables' => array(
+        'items' => NULL,
+      ),
+    ),
+    'speedware_concerts_pane' => array(
+      'path' => $path,
+      'template' => 'speedware_concerts_pane',
       'variables' => array(
         'items' => NULL,
       ),
