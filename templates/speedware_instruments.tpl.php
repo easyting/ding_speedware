@@ -2,14 +2,7 @@
 <?php foreach ($items as $instrument) : ?>
   <div class="item">
     <?php foreach ($instrument as $field => $value) : ?>
-    <div class="<?php echo strtolower($field) ?>">
-      <?php
-      switch ($field) {
-        default:
-          echo $value;
-      }
-      ?>
-    </div>
+    <div class="<?php echo strtolower($field) ?>"><?php echo $value ?></div>
     <?php endforeach; ?>
   </div>
 <?php endforeach; ?>
