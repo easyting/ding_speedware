@@ -5,6 +5,8 @@
  * Helper functions to integrate with SOAP library.
  */
 
+require_once __DIR__ . '/lib/SpeedwareAutoload.php';
+
 /**
  * Get list of all schools.
  *
