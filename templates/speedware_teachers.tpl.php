@@ -6,7 +6,9 @@
       <?php
       switch ($field) {
         case 'Fag':
-          echo implode(', ', $value->string);
+          if (is_object($value)) {
+            echo implode(', ', (array)$value->string);
+          }
           break;
         default:
           echo $value;
