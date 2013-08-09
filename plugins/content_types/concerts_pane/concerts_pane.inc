@@ -55,6 +55,7 @@ function ding_speedware_concerts_pane_render($subtype, $conf, $panel_args, $cont
     }
   }
 
+  $block->title = t($conf['override_title'] ? $conf['override_title_text'] : 'Concerts');
   $block->content = theme('speedware_concerts_pane', array('items' => $items));
   return $block;
 }
@@ -63,19 +64,6 @@ function ding_speedware_concerts_pane_render($subtype, $conf, $panel_args, $cont
  * Plugin edit form.
  */
 function ding_speedware_concerts_pane_plugin_edit_form($form, &$form_state) {
-  // Use specific title handling - hide pane title if no content is present.
-  // Standard pane title handling does not provide such functionality,
-  // so use custom title field and hide the standard ones.
-  unset($form['override_title']);
-  unset($form['override_title_text']);
-  unset($form['override_title_markup']);
-
-  $form['concerts_pane_custom_title'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Pane title'),
-    '#default_value' => t(!empty($form_state['conf']['concerts_pane_custom_title']) ? $form_state['conf']['concerts_pane_custom_title'] : t('Concerts')),
-  );
-
   $form['concerts_pane_amount'] = array(
     '#type' => 'select',
     '#options' => drupal_map_assoc(range(1, 20)),
@@ -91,6 +79,5 @@ function ding_speedware_concerts_pane_plugin_edit_form($form, &$form_state) {
  * Saves the data from the form.
  */
 function ding_speedware_concerts_pane_plugin_edit_form_submit($form, &$form_state) {
-  $form_state['conf']['concerts_pane_custom_title'] = $form_state['values']['concerts_pane_custom_title'];
   $form_state['conf']['concerts_pane_amount'] = $form_state['values']['concerts_pane_amount'];
 }

@@ -94,7 +94,7 @@ function _speedware_get_all_concerts() {
 function _speedware_get_all_instruments() {
   $speedwareServiceHent = new SpeedwareServiceHent(_speedware_default_config());
   $list = new SpeedwareStructHentUndervisningstilbudListe(variable_get('speedware_default_school', FALSE));
-  if($speedwareServiceHent->HentUndervisningstilbudListe($list)) {
+  if ($speedwareServiceHent->HentUndervisningstilbudListe($list)) {
     return $speedwareServiceHent
       ->getResult()
       ->HentUndervisningstilbudListeResult
