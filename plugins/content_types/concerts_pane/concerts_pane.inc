@@ -8,21 +8,22 @@
  * General ctools plugin settings.
  */
 $plugin = array(
-  'title' => t('All concerts'),
+  'title' => t('Concerts pane'),
   'category' => t('Speedware'),
-  'description' => t('Display list of all concerts'),
+  'description' => t('Display list of defined number of concerts'),
   'single' => TRUE,
-  'render callback' => 'ding_speedware_all_concerts_render',
+  'render callback' => 'ding_speedware_concerts_pane_render',
   'admin title' => 'ding_speedware_content_type_admin_title',
-  'edit form' => 'ding_speedware_all_concerts_plugin_edit_form',
+  'edit form' => 'ding_speedware_concerts_pane_plugin_edit_form',
 );
 
 /**
  * Plugin rendering.
  */
-function ding_speedware_all_concerts_render() {
+function ding_speedware_concerts_pane_render($subtype, $conf, $panel_args, $context) {
   $block = new stdClass();
 
+  $i = 1;
   $items = array();
   foreach (_speedware_get_all_concerts() as $concert) {
     $details = get_object_vars($concert);
@@ -45,16 +46,21 @@ function ding_speedware_all_concerts_render() {
     }
 
     $items[] = $details;
+
+    // @TODO limit on service level.
+    if ($i++ >= $conf['concerts_pane_amount']) {
+      break;
+    }
   }
 
-  $block->content = theme('speedware_concerts', array('items' => $items));
+  $block->content = theme('speedware_concerts_pane', array('items' => $items));
   return $block;
 }
 
 /**
  * Plugin edit form.
  */
-function ding_speedware_all_concerts_plugin_edit_form($form, &$form_state) {
+function ding_speedware_concerts_pane_plugin_edit_form($form, &$form_state) {
   // Use specific title handling - hide pane title if no content is present.
   // Standard pane title handling does not provide such functionality,
   // so use custom title field and hide the standard ones.
@@ -62,10 +68,17 @@ function ding_speedware_all_concerts_plugin_edit_form($form, &$form_state) {
   unset($form['override_title_text']);
   unset($form['override_title_markup']);
 
-  $form['all_concerts_custom_title'] = array(
+  $form['concerts_pane_custom_title'] = array(
     '#type' => 'textfield',
     '#title' => t('Pane title'),
-    '#default_value' => t(!empty($form_state['conf']['all_concerts_custom_title']) ? $form_state['conf']['all_concerts_custom_title'] : t('Concerts')),
+    '#default_value' => t(!empty($form_state['conf']['concerts_pane_custom_title']) ? $form_state['conf']['concerts_pane_custom_title'] : t('Concerts')),
+  );
+
+  $form['concerts_pane_amount'] = array(
+    '#type' => 'select',
+    '#options' => drupal_map_assoc(range(1, 20)),
+    '#title' => t('Amount of concerts'),
+    '#default_value' => !empty($form_state['conf']['concerts_pane_amount']) ? $form_state['conf']['concerts_pane_amount'] : 4,
   );
 
   return $form;
@@ -75,6 +88,7 @@ function ding_speedware_all_concerts_plugin_edit_form($form, &$form_state) {
  * Plugin edit form submit handler.
  * Saves the data from the form.
  */
-function ding_speedware_all_concerts_plugin_edit_form_submit($form, &$form_state) {
-  $form_state['conf']['all_concerts_custom_title'] = $form_state['values']['all_concerts_custom_title'];
+function ding_speedware_concerts_pane_plugin_edit_form_submit($form, &$form_state) {
+  $form_state['conf']['concerts_pane_custom_title'] = $form_state['values']['concerts_pane_custom_title'];
+  $form_state['conf']['concerts_pane_amount'] = $form_state['values']['concerts_pane_amount'];
 }
