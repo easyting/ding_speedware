@@ -4,6 +4,8 @@
  * Ctools plugin definition file.
  */
 
+module_load_include('inc', 'ding_speedware', 'ding_speedware.service');
+
 /**
  * General ctools plugin settings.
  */

@@ -4,9 +4,6 @@
  * @file ding_speedware.module
  */
 
-require_once __DIR__ . '/lib/SpeedwareAutoload.php';
-require_once __DIR__ . '/ding_speedware.service.inc';
-
 /**
  * Implements hook_menu().
  */
@@ -19,6 +16,7 @@ function ding_speedware_menu(){
       'page callback' => 'drupal_get_form',
       'page arguments' => array('ding_speedware_admin_form'),
       'access arguments' => array('access administration pages'),
+      'file' => 'ding_speedware.service.inc',
     ),
   );
 
