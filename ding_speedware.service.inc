@@ -32,14 +32,25 @@ function _speedware_get_all_schools() {
 function _speedware_get_all_teachers() {
   $speedwareServiceHent = new SpeedwareServiceHent(_speedware_default_config());
   $laererList = new SpeedwareStructHentLaererList(variable_get('speedware_default_school', FALSE));
-  if($speedwareServiceHent->HentLaererList($laererList))
-    return $speedwareServiceHent
+  if($speedwareServiceHent->HentLaererList($laererList)) {
+    $teachers = $speedwareServiceHent
       ->getResult()
       ->HentLaererListResult
       ->Laerer
       ->HentLaererListResult
       ->Laerer
     ;
+
+    // Fetch images.
+    foreach ($teachers as $teacher) {
+      if ($teacher->Billede) {
+        // @TODO: image fetching (image field is always empty).
+        _speedware_fetch_image($teacher->Billede);
+      }
+    }
+
+    return $teachers;
+  }
   else {
     _speedware_service_log($speedwareServiceHent->getLastError());
   }
@@ -95,6 +106,29 @@ function _speedware_get_all_instruments() {
   }
 
   return array();
+}
+
+/**
+ * Fetch an image.
+ *
+ * @param string $id
+ *  speedware image id.
+ */
+function _speedware_fetch_image($id) {
+  $speedwareServiceGet = new SpeedwareServiceGet(_speedware_default_config());
+  $image_query = new SpeedwareStructGetImage(
+    SpeedwareEnumImageType::VALUE_TEACHER,
+    $id,
+    variable_get('speedware_default_school', FALSE)
+  );
+  if($speedwareServiceGet->GetImage($image_query)) {
+    // @TODO: store locally.
+  }
+  else {
+    _speedware_service_log($speedwareServiceGet->getLastError());
+  }
+
+  return FALSE;
 }
 
 /**
