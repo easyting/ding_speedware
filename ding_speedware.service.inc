@@ -7,6 +7,8 @@
 
 require_once __DIR__ . '/lib/SpeedwareAutoload.php';
 
+drupal_add_css(drupal_get_path('module', 'ding_speedware') . '/css/ding_speedware.css', array('group' => CSS_DEFAULT));
+
 /**
  * Get list of all schools.
  *

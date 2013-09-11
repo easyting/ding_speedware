@@ -1,0 +1,49 @@
+/* Omega reset */
+.speedware tr:hover td,
+.speedware tr.even:hover td.active,
+.speedware tr.odd:hover td.active {
+  background-color: transparent;
+}
+
+.speedware_container {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  margin-bottom: 10px;
+}
+
+/* Speedware styles*/
+.pane-all-instruments,
+.pane-all-teachers,
+.pane-concerts-pane,
+.pane-all-concerts {
+  background-color: #fff;
+  padding: 10px;
+}
+
+.speedware .item.even td {
+  background-color: #f9f9f9;
+}
+
+.speedware .item > td {
+  border-top: 1px solid #ddd;
+  padding: 8px;
+  vertical-align: top;
+}
+
+.speedware .item:first-child > td {
+  border-top: none;
+}
+
+.responsive-layout-mobile .speedware td {
+  display: block;
+  text-align: center;
+  -ms-word-break: normal;
+  word-break: normal;
+  border: none;
+  padding: 5px;
+}
+
+.responsive-layout-mobile .speedware .item {
+  border-top: 1px solid #ddd;
+}
